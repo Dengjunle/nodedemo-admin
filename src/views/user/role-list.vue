@@ -71,7 +71,11 @@
           <el-transfer
             :titles="['未拥有的权限', '拥有的权限']"
             :data="authList"
+            v-model="detail.authList"
           ></el-transfer>
+        </el-form-item>
+        <el-form-item label="菜单">
+        <el-tree ref="tree"  node-key="id" :data="menuList" :props="defaultProps" show-checkbox @check-change="handleCheckChange"></el-tree>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -82,7 +86,7 @@
 </template>
 
 <script>
-import { getRoleList, delRole, addUpdateRole, getAuthList } from "@/api/user";
+import { getRoleList, delRole, addUpdateRole, getAuthList,getMenuList } from "@/api/user";
 import Pagination from "@/components/Pagination";
 export default {
   components: {
@@ -102,16 +106,24 @@ export default {
         id: "",
         name: "",
         brief: "",
+        authList:[],
+        menuList:[]
       }, //详情
       dialogVisible: false,
       selectAuthListId: [],
       authList: [],
+      menuList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'menuname'
+      }
     };
   },
   mounted() {
     // 初始化
     this.getList();
     this.getAuth();
+    this.getMenu();
   },
   methods: {
     // 获取各种数据
@@ -140,13 +152,24 @@ export default {
         });
       });
     },
+    // 获取菜单列表
+    async getMenu(){
+        let res = await getMenuList();
+        this.menuList = res;
+    },
+    // 编辑角色
     updateClick(obj) {
       this.detail = obj;
-      console.log(obj, this.roleList);
+      this.$nextTick(() => {
+        this.$refs.tree.setCheckedKeys(obj.menuList);
+      });
+      console.log(obj, this.authList);
       this.dialogVisible = true;
     },
     // 确认修改角色
     async editClick() {
+      this.detail.menuList = this.$refs.tree.getCheckedKeys();
+        console.log(this.detail)
       let res = await addUpdateRole(this.detail);
       this.$message({
         message: "操作成功",
@@ -166,6 +189,9 @@ export default {
     },
     // 添加角色
     async addClick() {
+      this.$nextTick(() => {
+        this.$refs.tree.setCheckedKeys([]);
+      });
       this.dialogVisible = true;
     },
     // 删除角色
@@ -177,6 +203,12 @@ export default {
       });
       this.getList();
     },
+    // 选择的菜单发生变化
+    handleCheckChange(data){
+        console.log(data)
+        console.log(this.$refs.tree.getCheckedNodes());
+        console.log(this.$refs.tree.getCheckedKeys());
+    }
   },
 };
 </script>

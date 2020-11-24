@@ -70,7 +70,16 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 1200) {
+    if (res.code == 401) {
+      Message({
+        message: res.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+      store.dispatch('user/logout')
+      router.replace('/login')
+      return Promise.reject(new Error(res.message || 'Error'))
+    }else if (res.code !== 1200) {
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -91,13 +100,13 @@ service.interceptors.response.use(
       })
       return Promise.reject(error)
     }
-    // switch (error.response.data.code){
-    //   case 401:
-    //     error.message = error.response.data.msg;
-    //     store.dispatch('user/logout')
-    //     router.replace('/login')
-    //     break;
-    // }
+    switch (error.response.data.code){
+      case 401:
+        error.message = error.response.data.msg;
+        store.dispatch('user/logout')
+        router.replace('/login')
+        break;
+    }
     Message({
       message: error.message,
       type: 'error',

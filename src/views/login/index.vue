@@ -118,7 +118,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               console.log("进行页面跳转")
-              this.$router.push({ path: '/'})
+              this.$router.push({ path: '/home'})
               this.loading = false
             })
             .catch(() => {

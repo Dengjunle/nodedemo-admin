@@ -1,5 +1,4 @@
 const TokenKey = 'Admin-Token'
-const Roles = 'roles'
 const Userinfo = 'userinfo'
 export function getToken() {
   return localStorage.getItem(TokenKey)
@@ -11,18 +10,6 @@ export function setToken(token) {
 
 export function removeToken() {
   return localStorage.removeItem(TokenKey)
-}
-
-export function getRoles() {
-  return JSON.parse(localStorage.getItem(Roles) || '[]')
-}
-
-export function setRoles(roles) {
-  return localStorage.setItem(Roles, JSON.stringify(roles))
-}
-
-export function removeRoles() {
-  return localStorage.removeItem(Roles)
 }
 
 export function getUserinfo() {

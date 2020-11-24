@@ -15,7 +15,7 @@ const mutations = {
     state.token = token
   },
   SET_USERINFO: (state,userinfo)=>{
-    state.userInfo = userinfo
+    state.userinfo = userinfo
   }
 }
 
@@ -33,7 +33,7 @@ const actions = {
         const userinfo = response;
         // 保存token
         commit('SET_TOKEN', userinfo.token)
-        // 保存用户信息
+        // // 保存用户信息
         commit('SET_USERINFO', userinfo)
         setToken(userinfo.token)
         setUserinfo(userinfo)

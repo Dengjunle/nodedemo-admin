@@ -109,3 +109,30 @@ export function addUpdateRole(data){
         data
     })
 }
+
+// 获取菜单列表
+export function getMenuList(params){
+    return request({
+        url:`${BASE}/admin/users/menu`,
+        method:'get',
+        params
+    })
+}
+
+// 删除菜单信息
+export function delMenu(data){
+    return request({
+        url:`${BASE}/admin/users/menu`,
+        method:'delete',
+        data
+    })
+}
+
+// 添加/编辑菜单信息
+export function addUpdateMenu(data){
+    return request({
+        url:`${BASE}/admin/users/menu`,
+        method:'post',
+        data
+    })
+}

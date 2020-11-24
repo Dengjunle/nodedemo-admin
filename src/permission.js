@@ -24,21 +24,22 @@ router.beforeEach(async(to, from, next) => {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       // next();
+      console.log(2)
       next({ path: '/' })
       NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
     } else {
       const hasRoutes= store.state.permission.routes && store.state.permission.routes.length > 0;
       if (hasRoutes) {
+        console.log(3)
         next()
       }else{
         try {
           console.log(1)
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const userinfo = await store.dispatch('user/getInfo')
+          const userinfo = await store.state.user.userinfo
           // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', userinfo.role)
-
+          const accessRoutes = await store.dispatch('permission/generateRoutes', userinfo.menuList)
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
 
@@ -46,8 +47,9 @@ router.beforeEach(async(to, from, next) => {
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
         } catch (error) {
+          console.log("error",error)
           // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
+          await store.dispatch('user/logout')
           Message.error(error || 'Has Error')
           next(`/login`)
           // next(`/login?redirect=${to.path}`)
